@@ -1,0 +1,28 @@
+=== Parameters ===
+QualitiesFiles : ../datasets/BreastCancer/qualities.csv
+PropertiesFiles : ../datasets/BreastCancer/properties.csv
+attrType : NUMERIC
+resFolder : NbIterations/BreastCancer/iter_0000050
+minSupp : 10
+nbLoops : 50
+maxOutput : 50
+maxRedundancy : 1.4
+maxLength : 5
+measure : WRAcc
+UCB : UCBSP
+refineExpand : TunedGenerator
+duplicatesExpand : AMAF
+pathLength : -1
+refineRollOut : Large
+jumpingLarge : 30
+rewardPolicy : MaxPath
+memoryPolicy : TopK
+topKMemory : 1
+updatePolicy : Max
+
+=== Result Information ===
+date : 07/12/2016 17:37
+runtime(ms) : 97
+nbPatterns : 22
+measures : 0.18 0.17 0.09 0.05 0.04 0.02 0.02 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00 0.00
+descriptionLength : 3 3 2 2 2 5 3 5 2 4 5 4 5 4 4 4 3 4 3 5 4 4

@@ -1,0 +1,8 @@
+[1.0 <= "Clump_Thickness" <= 8.0], [1.0 <= "Uniformity_Of_Cell_Size" <= 3.0], [-999.0 <= "Bare_Nuclei" <= 8.0]	[Benign]	0.20301636713801244	442.0	16.0	16.0
+[1.0 <= "Uniformity_Of_Cell_Shape" <= 8.0], [1.0 <= "Single_Epithelial_Cell_Size" <= 7.0], [1.0 <= "Mitoses" <= 8.0], ["?" = 0.0]	[Benign]	0.08475832018354447	455.0	149.0	3.0
+[1.0 <= "Uniformity_Of_Cell_Shape" <= 6.0], ["Bland_Chromatin" = 2.0], [1.0 <= "Normal_Nucleoli" <= 3.0], [1.0 <= "Mitoses" <= 2.0]	[Benign]	0.07655121459022801	159.0	2.0	299.0
+[1.0 <= "Bland_Chromatin" <= 7.0]	[Benign]	0.05530483973630833	458.0	182.0	0.0
+["Marginal_Adhesion" = 10.0], [3.0 <= "Single_Epithelial_Cell_Size" <= 10.0], [3.0 <= "Normal_Nucleoli" <= 8.0], [1.0 <= "Mitoses" <= 7.0], ["?" = 0.0]	[Benign]	0.0	0.0	20.0	458.0
+[1.0 <= "Uniformity_Of_Cell_Shape" <= 6.0], [1.0 <= "Marginal_Adhesion" <= 7.0], [7.0 <= "Bland_Chromatin" <= 10.0], [4.0 <= "Normal_Nucleoli" <= 10.0], [2.0 <= "Mitoses" <= 10.0]	[Benign]	0.0	1.0	10.0	457.0
+[7.0 <= "Clump_Thickness" <= 10.0], [2.0 <= "Uniformity_Of_Cell_Shape" <= 10.0], ["Single_Epithelial_Cell_Size" = 10.0], [1.0 <= "Bland_Chromatin" <= 7.0]	[Benign]	0.0	0.0	12.0	458.0
+[2.0 <= "Clump_Thickness" <= 10.0], [3.0 <= "Marginal_Adhesion" <= 6.0], [9.0 <= "Bland_Chromatin" <= 10.0]	[Benign]	0.0	0.0	10.0	458.0
