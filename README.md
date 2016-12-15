@@ -1,7 +1,7 @@
 # MCTS4DM ReadMe
 
 ## Introduction
-*MCTS4DM* is an instant mining algorithm designed to extract frequent subgroups from a dataset.
+*MCTS4DM* is a anytime pattern mining algorithm that is able to consider tabular data with numerical and categorical attributes and to extracting patterns that distingishe a target (subgroup discovery, exceptional model mining, ...). 
 
 ## Repository contents
 To run *MCTS4DM*, you need to download the projet from this GitHub repository. Below, we detail the content of each folder and file contained in this repository.
