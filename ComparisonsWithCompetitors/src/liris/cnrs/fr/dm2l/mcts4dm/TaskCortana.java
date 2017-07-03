@@ -6,6 +6,11 @@ import java.util.Set;
 
 import nl.liacs.subdisc.AttributeType;
 
+/**
+ * The task to launch a beam search with Cortana
+ * @author guillaume
+ *
+ */
 public class TaskCortana extends Task {
 	private final int beamwidth;
 	private AttributeType dataType;

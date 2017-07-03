@@ -5,6 +5,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * The task to launch the exhaustive search SD-Map* implemented in the VIKAMINE
+ * tool
+ * 
+ * @author guillaume
+ *
+ */
 public class TaskVikamine extends Task {
 	private final int algo;
 
@@ -14,7 +21,7 @@ public class TaskVikamine extends Task {
 		this.minSupp = minSupp;
 		if (algo == Main.SD_MAP)
 			this.name = "SDMAP";
-		else 
+		else
 			this.name = "BeamSearch";
 	}
 
@@ -43,7 +50,5 @@ public class TaskVikamine extends Task {
 		res.add(this.name);
 		return res;
 	}
-	
-	
 
 }

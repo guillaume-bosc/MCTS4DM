@@ -50,8 +50,6 @@ import org.vikamine.kernel.subgroup.target.SelectorTarget;
 
 import Data.Subgroup;
 import Process.Global;
-import Process.MCTS4DM;
-import Process.Misere;
 import dp2.Avaliador;
 import dp2.Const;
 import dp2.D;
@@ -132,156 +130,35 @@ public class Main {
 		 * as target
 		 * 
 		 */
+
+		/*
+		 * Generates the artificial data
+		 */
 		artificialData = new String[5];
 		artificialData[0] = generateArtificialDataset(5000, 10, 200);
 		artificialData[1] = generateArtificialDataset(20000, 10, 200);
 		artificialData[2] = generateArtificialDataset(5000, 50, 50);
 		artificialData[3] = generateArtificialDataset(5000, 50, 200);
 		artificialData[4] = generateArtificialDataset(20000, 50, 200);
-		// runArtificialXP();
-		// runBenchmarkXP();
-		// mergeResult("Result-26-06", "resultBeamSearch");
 
-		String[] dataMeasure = { "mushroomEntropy", "mushroomF1", "mushroomAcc", "mushroomJaccard" };
-		for (String base : dataMeasure)
-			generateBenchmarkDataFile(base, "Result-26-06");
-		// for (String base : artificialData)
-		// generateArtificialDataFile(base, "Result-26-06");
+		// Runs the experiments on the artificial data
+		runArtificialXP();
 
-		System.exit(-1);
+		// Runs the experiments on the benchmark data
+		runBenchmarkXP();
 
-		String base = artificialData[0];
-		String[][] attAndTargs = createDataset2(base);
-		System.out.println("**Launch Misere");
-		List<Subgroup> res = Misere.misere("Misere.conf");
-		List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> resMisere = new ArrayList<liris.cnrs.fr.dm2l.mcts4dm.Pattern>();
-		for (Subgroup s : res)
-			resMisere.add(convertSubgroupToPattern(s));
-
-		System.exit(-1);
-
-		System.out.println("**Misere before filter***");
-		Collections.sort(resMisere);
-		System.out.println("sorted !");
-		System.out.println("Score jaccard: " + DataGen.compare(resMisere, base));
-
-		System.out.println("**Misere after filter***");
-		// very HIGH value means that two patterns are redundant if VERY similar
-		resMisere = postProcessRedundancy(resMisere, MAX_SIMILARITY[3]);
-		System.out.println("Score jaccard: " + DataGen.compare(resMisere, base));
-
-		System.out.println("**Launch MCTS4DM");
-		List<Subgroup> res2 = MCTS4DM.mcts4dm("MCTS4DM.conf");
-		List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> resMcts = new ArrayList<liris.cnrs.fr.dm2l.mcts4dm.Pattern>();
-		for (Subgroup s : res2)
-			resMcts.add(convertSubgroupToPattern(s));
-
-		System.out.println("**MCTS4DM before filter***");
-		Collections.sort(resMcts);
-		System.out.println("Score jaccard: " + DataGen.compare(resMcts, base));
-
-		System.out.println("**MCTS4DM after filter***");
-		// very HIGH value means that two patterns are redundant if VERY similar
-		resMcts = postProcessRedundancy(resMcts, MAX_SIMILARITY[3]);
-		System.out.println("Score jaccard: " + DataGen.compare(resMcts, base));
-
-		System.exit(-1);
-		// MCTS4DM.mcts4dm("MCTS4DM.conf");
-
-		/**
-		 * Call the algorithms. Each call returns a List[2] with an ArrayList
-		 * <Integer> at position 0: the pattern qualities with an ArraList
-		 * <BitSet> at position 1: the pattern extent. these two lists share of
-		 * course the same indexSet, that is, patter, number i has quality i and
-		 * extent i
-		 */
-		System.out.println("**SDMAP***");
-		result = vikamine(base, "class", SD_MAP, 1);
-
-		System.out.println("**SDMAP before filter***");
-		Collections.sort(result);
-		for (liris.cnrs.fr.dm2l.mcts4dm.Pattern p : result)
-			System.out.println(p.quality + " - " + p.displayExtent());
-
-		System.out.println("Score jaccard: " + DataGen.compare(result, base));
-		System.exit(-1);
-
-		System.out.println("**SDMAP after filter***");
-		// very HIGH value means that two patterns are redundant if VERY similar
-		result = postProcessRedundancy(result, 0.5);
-		for (liris.cnrs.fr.dm2l.mcts4dm.Pattern p : result)
-			System.out.println(p.quality + " - " + p.displayExtent());
-
-		System.out.println("**BEAMSEARCH***");
-		result = vikamine(base, "class", BEAM_SEARCH, 1);
-		for (liris.cnrs.fr.dm2l.mcts4dm.Pattern p : result)
-			System.out.println(p.quality + " - " + p.displayExtent());
-
-		System.out.println("**GENETIC***");
-		result = ssdp(base, 10, false);
-		for (liris.cnrs.fr.dm2l.mcts4dm.Pattern p : result)
-			System.out.println(p.quality + " - " + p.displayExtent());
-
-		System.out.println("Score jaccard: " + DataGen.compare(result, base));
-
-		System.out.println("***EMM**");
-		String numericalAttributePair = attAndTargs[0][0].replaceAll("\"", "") + ","
-				+ attAndTargs[0][1].replaceAll("\"", "");
-		result = emm(base, numericalAttributePair, 10); // "sepal_length,sepal_width");
-		for (liris.cnrs.fr.dm2l.mcts4dm.Pattern p : result)
-			System.out.println(p.quality + " - " + p.displayExtent());
-
-		/**
-		 * 
-		 * 
-		 * MCTS & MISERE
-		 * 
-		 * 
-		 */
+		// Generates the data files to plot the figures
+		for (String base : benchmarkData)
+			generateBenchmarkDataFile(base, "result");
+		for (String base : artificialData)
+			generateArtificialDataFile(base, "result");
 
 	}
 
-	public static void mergeResult(String folderDest, String folderOther) {
-		try {
-			File folder = new File(folderDest);
-			File[] listOfFiles = folder.listFiles();
-			for (int i = 0; i < listOfFiles.length; i++) {
-				if (listOfFiles[i].isDirectory()) {
-					String base = listOfFiles[i].getName();
-					System.out.println(base);
-					File[] listOfData = listOfFiles[i].listFiles();
-					for (int j = 0; j < listOfData.length; j++) {
-						if (listOfData[j].isFile() && listOfData[j].getName().endsWith(".csv")
-								&& !listOfData[j].getName().startsWith("memory")) {
-							String fileName = listOfData[j].getName();
-							System.out.println(folderDest + "/" + base + "/" + fileName);
-							List<String> listDest = Files.readAllLines(
-									new File(folderDest + "/" + base + "/" + fileName).toPath(),
-									Charset.defaultCharset());
-							List<String> listOther = Files.readAllLines(
-									new File(folderOther + "/" + base + "/" + fileName).toPath(),
-									Charset.defaultCharset());
-							File output = new File("merged/" + base);
-							if (!output.exists())
-								output.mkdirs();
-							BufferedWriter bw = new BufferedWriter(new FileWriter("merged/" + base + "/" + fileName));
-							for (int id = 0; id < listDest.size(); id++) {
-								if (id >= 2 && id <= 4) {
-									bw.write(listOther.get(id - 1) + "\n");
-								} else
-									bw.write(listDest.get(id) + "\n");
-							}
-							bw.flush();
-							bw.close();
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
+	/**
+	 * Runs the experiments for the benchmark data
+	 * @throws IOException
+	 */
 	public static void runBenchmarkXP() throws IOException {
 		for (int idBase = 0; idBase < benchmarkData.length; idBase++) {
 			String base = benchmarkData[idBase];
@@ -503,10 +380,12 @@ public class Main {
 
 	}
 
+	/**
+	 * Runs the experiment for the artificial data
+	 * @throws Exception
+	 */
 	public static void runArtificialXP() throws Exception {
 		for (int idBase = 0; idBase < artificialData.length; idBase++) {
-			if (idBase < artificialData.length - 1)
-				continue;
 			String base = artificialData[idBase];
 			System.out.println("\n*****\nBase = " + base);
 			createDataset2(base);
@@ -617,6 +496,12 @@ public class Main {
 
 	}
 
+
+	/**
+	 * Generates the data file to plot the figures for artificial data
+	 * @param base: the name of the database
+	 * @param folderName : the filder containing the result
+	 */
 	public static void generateArtificialDataFile(String base, String folderName) {
 		try {
 			File repository = new File(folderName + "/" + base + "/data");
@@ -691,6 +576,11 @@ public class Main {
 
 	}
 
+	/**
+	 * Generates the data file to plot the figures for benchmark data
+	 * @param base: the name of the database
+	 * @param folderName : the filder containing the result
+	 */
 	public static void generateBenchmarkDataFile(String base, String folderName) {
 		try {
 			File folder = new File(folderName + "/" + base);
@@ -878,6 +768,12 @@ public class Main {
 
 	}
 
+	/**
+	 * Filters out the unfrequent patterns from a pattern set given a minimum support threshold
+	 * @param minsupp: the minimum support threshold
+	 * @param list: the pattern set
+	 * @return the updated pattern set
+	 */
 	public static List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> filterFrequent(int minsupp,
 			List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> list) {
 		List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> res = new ArrayList<liris.cnrs.fr.dm2l.mcts4dm.Pattern>();
@@ -888,6 +784,11 @@ public class Main {
 		return res;
 	}
 
+	/**
+	 * Computes the sum of the quality measures of the top-k best patterns of a pattern set
+	 * @param result: the result set
+	 * @return the array containing the sum for different values of k
+	 */
 	public static double[] getAreaTopK(List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> result) {
 		double[] area = new double[TOP_K.length];
 
@@ -901,6 +802,13 @@ public class Main {
 		return area;
 	}
 
+	/**
+	 * Computes the sum of the quality measures of the patterns for which the
+	 * quality measure is greater than a given threshold
+	 * 
+	 * @param result : the list of the patterns
+	 * @return the updated of patterns
+	 */
 	public static int[] getAreaMinQual(List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> result) {
 		int[] nb = new int[MIN_QUAL.length];
 
@@ -915,6 +823,17 @@ public class Main {
 		return nb;
 	}
 
+	/**
+	 * Runs the task
+	 * 
+	 * @param task
+	 *            : the task to run
+	 * @param time
+	 *            : the time unit for the timeout
+	 * @param timeOut
+	 *            : the value of the timeout
+	 * @return
+	 */
 	public static List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> launchTask(
 			Callable<List<liris.cnrs.fr.dm2l.mcts4dm.Pattern>> task, TimeUnit time, int timeOut) {
 		final ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -948,7 +867,13 @@ public class Main {
 		return null;
 	}
 
-	private static List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> filterNegativeMeasures(
+	/**
+	 * Filters out the patterns with negative quality measures
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public static List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> filterNegativeMeasures(
 			List<liris.cnrs.fr.dm2l.mcts4dm.Pattern> list) {
 		if (list == null)
 			return null;
@@ -960,6 +885,53 @@ public class Main {
 			}
 		}
 		return res;
+	}
+
+	/**
+	 * Merges the results from two different folders
+	 * 
+	 * @param folderDest
+	 * @param folderOther
+	 */
+	public static void mergeResult(String folderDest, String folderOther) {
+		try {
+			File folder = new File(folderDest);
+			File[] listOfFiles = folder.listFiles();
+			for (int i = 0; i < listOfFiles.length; i++) {
+				if (listOfFiles[i].isDirectory()) {
+					String base = listOfFiles[i].getName();
+					System.out.println(base);
+					File[] listOfData = listOfFiles[i].listFiles();
+					for (int j = 0; j < listOfData.length; j++) {
+						if (listOfData[j].isFile() && listOfData[j].getName().endsWith(".csv")
+								&& !listOfData[j].getName().startsWith("memory")) {
+							String fileName = listOfData[j].getName();
+							System.out.println(folderDest + "/" + base + "/" + fileName);
+							List<String> listDest = Files.readAllLines(
+									new File(folderDest + "/" + base + "/" + fileName).toPath(),
+									Charset.defaultCharset());
+							List<String> listOther = Files.readAllLines(
+									new File(folderOther + "/" + base + "/" + fileName).toPath(),
+									Charset.defaultCharset());
+							File output = new File("merged/" + base);
+							if (!output.exists())
+								output.mkdirs();
+							BufferedWriter bw = new BufferedWriter(new FileWriter("merged/" + base + "/" + fileName));
+							for (int id = 0; id < listDest.size(); id++) {
+								if (id >= 2 && id <= 4) {
+									bw.write(listOther.get(id - 1) + "\n");
+								} else
+									bw.write(listDest.get(id) + "\n");
+							}
+							bw.flush();
+							bw.close();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

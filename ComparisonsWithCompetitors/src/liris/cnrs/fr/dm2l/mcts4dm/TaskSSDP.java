@@ -7,6 +7,11 @@ import java.util.Set;
 
 import weka.classifiers.trees.j48.NBTreeClassifierTree;
 
+/**
+ * The task to launch the evolutionary algorithm SSDP
+ * @author guillaume
+ *
+ */
 public class TaskSSDP extends Task{
 	private final int nbOutput;
 

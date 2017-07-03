@@ -8,6 +8,11 @@ import java.util.Set;
 import Data.Subgroup;
 import Process.Misere;
 
+/**
+ * The task to launch Misere, a sampling algorithm
+ * @author guillaume
+ *
+ */
 public class TaskMisere extends Task {
 	private final String confFile = "Misere.conf";
 	private final Data.Enum.Measure measure;

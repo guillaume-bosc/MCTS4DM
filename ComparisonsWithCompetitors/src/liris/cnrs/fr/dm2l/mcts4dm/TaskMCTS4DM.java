@@ -8,6 +8,11 @@ import java.util.Set;
 import Data.Subgroup;
 import Process.MCTS4DM;
 
+/**
+ * The task to launch MCTS4DM
+ * @author guillaume
+ *
+ */
 public class TaskMCTS4DM extends Task {
 	private final String confFile = "MCTS4DM.conf";
 	private final Data.Enum.Measure measure;
