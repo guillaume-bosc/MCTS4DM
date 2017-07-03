@@ -1,0 +1,10 @@
+"Clump_Thickness";numeric;some descriptions
+"Uniformity_Of_Cell_Size";numeric;some descriptions
+"Uniformity_Of_Cell_Shape";numeric;some descriptions
+"Marginal_Adhesion";numeric;some descriptions
+"Single_Epithelial_Cell_Size";numeric;some descriptions
+"Bare_Nuclei";numeric;some descriptions
+"Bland_Chromatin";numeric;some descriptions
+"Normal_Nucleoli";numeric;some descriptions
+"Mitoses";numeric;some descriptions
+"?";numeric;some descriptions

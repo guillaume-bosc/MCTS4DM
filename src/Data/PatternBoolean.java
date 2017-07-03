@@ -12,7 +12,7 @@ public class PatternBoolean extends Pattern {
 	 * Declaration of the attributes of the class
 	 * ########################################################################
 	 */
-	OpenBitSet description;
+	public OpenBitSet description;
 
 	/*
 	 * ########################################################################
@@ -31,15 +31,14 @@ public class PatternBoolean extends Pattern {
 		this.supportSize = Global.objects.length;
 
 		if (this.isTarget)
-			if (Global.measure != Enum.Measure.FBeta) {
+			if (!Global.extendsWithLabels) {
 				this.candidates = new OpenBitSet(1);
 			} else {
 				this.candidates = new OpenBitSet(Global.targets.length);
 				this.candidates.set(0, Global.targets.length);
 			}
 		else {
-			this.candidates = new OpenBitSet(Global.nbChild);
-			this.candidates.set(0, Global.nbChild);
+			this.candidates = (OpenBitSet) Global.candidatesBoolean.clone();
 		}
 
 		this.lastIdAttr = -1;
@@ -53,15 +52,14 @@ public class PatternBoolean extends Pattern {
 		this.lastIdAttr = descr.lastIdAttr;
 
 		if (this.isTarget)
-			if (Global.measure != Enum.Measure.FBeta) {
+			if (!Global.extendsWithLabels) {
 				this.candidates = new OpenBitSet(1);
 			} else {
 				this.candidates = new OpenBitSet(Global.targets.length);
 				this.candidates.set(0, Global.targets.length);
 			}
 		else {
-			this.candidates = new OpenBitSet(Global.nbChild);
-			this.candidates.set(0, Global.nbChild);
+			this.candidates = (OpenBitSet) Global.candidatesBoolean.clone();
 		}
 	}
 
@@ -94,15 +92,14 @@ public class PatternBoolean extends Pattern {
 		this.support = suppTarget;
 
 		if (this.isTarget)
-			if (Global.measure != Enum.Measure.FBeta)
+			if (!Global.extendsWithLabels)
 				this.candidates = new OpenBitSet(1);
 			else {
 				this.candidates = new OpenBitSet(Global.targets.length);
 				this.candidates.set(0, Global.targets.length);
 			}
 		else {
-			this.candidates = new OpenBitSet(Global.nbChild);
-			this.candidates.set(0, Global.nbChild);
+			this.candidates = (OpenBitSet) Global.candidatesBoolean.clone();
 		}
 	}
 
@@ -112,7 +109,7 @@ public class PatternBoolean extends Pattern {
 	 * ########################################################################
 	 */
 	@Override
-	Pattern expand(int idChild, OpenBitSet supportDual) {
+	public Pattern expand(int idChild, OpenBitSet supportDual) {
 		this.candidates.clear(idChild);
 		if (this.description.get(idChild))
 			return null;

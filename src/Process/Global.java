@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ public class Global {
 	public static Attribute[] attributes;
 	public static Object[] objects;
 	public static Attribute[] targets;
+	public static Map<String, Attribute> targetToId = new HashMap<String, Attribute>();
 
 	public static int nbAttr;
 	public static int nbChild;
@@ -47,9 +49,15 @@ public class Global {
 	public static int minSupTarget = 1;
 	public static int nbLoops = 500000;
 	public static int beamWidth = 100;
+	public static Enum.Redundancy redundancyStrategy;
+	public static boolean redundancyIdenticalLabels;
 	public static double maxRedundancy = 1.5;
 	public static int nbOutput = 100;
 	public static int maxLength = Integer.MAX_VALUE;
+	public static int maxLabel = 100;
+	public static Enum.MctsType mctsType;
+	public static String subsetLabels;
+	public static boolean extendsWithLabels;
 
 	public static String resFolderName = "Test";
 
@@ -77,12 +85,17 @@ public class Global {
 	public static BufferedWriter bufferSupport;
 	public static BufferedWriter bufferSupportE11;
 	public static BufferedWriter bufferInfo;
+	public static BufferedWriter bufferMean;
 	public static String repositoryName;
 
 	public static long runTime;
 
-	public static PriorityQueue<Subgroup> allSubgroups = new PriorityQueue<Subgroup>(nbLoops,
-			Subgroup.subgroupComparatorMeasureReverse);
+	public static PriorityQueue<Subgroup> allSubgroups = new PriorityQueue<Subgroup>(nbLoops,Subgroup.subgroupComparatorMeasureReverse);
+	//public static List<Subgroup> allSubgroupsList = new ArrayList<Subgroup>();
+	public static HashMap<Subgroup, Subgroup> uniqueResult = new HashMap<Subgroup, Subgroup>();
+
+	public static OpenBitSet candidatesNominal;
+	public static OpenBitSet candidatesBoolean;
 
 	// Statistic values
 	public static int nbRoll = 0;
@@ -105,6 +118,8 @@ public class Global {
 	public static List<Double> resultMeasures = new ArrayList<Double>();
 	public static List<Integer> resultLength = new ArrayList<Integer>();
 	public static int resultPatternCount = 0;
+	public static double meanMeasure = 0.;
+	public static int nbPatterns = 0;
 
 	// Optimization structure
 	public static double[] logList;
@@ -113,7 +128,10 @@ public class Global {
 	public static HashMap<Integer, OpenBitSet> attrSupport = null;
 	public static int[] attrSupportSize;
 	public static double log2 = Math.log(2);
-	public static HashMap<Subgroup, Subgroup> amaf;
+	public static HashMap<Subgroup, Subgroup> amaf = null;
+	public static boolean wasNotInAmaf = true;
+	public static List<List<List<Integer>>> sequenceIndex;
+	// public static int[] mappingObjSortedToOriginal;
 
 	public static String launchCommand = "\njava -jar OlfaMCTS.jar QualitiesFile PropertiesFile maxoutput nbLoops minSup xBeta lBeta minRedundancy resFolderName"
 			+ "\n\t- QualitiesFile is the path to your qualities file"
@@ -165,14 +183,14 @@ public class Global {
 				+ "ms pour timeHandlePath (" + df.format(((double) (timeHandlePath) / timeRollOut)) + "%) " + timeMemory
 				+ "ms pour timeMemory (" + df.format(((double) (timeMemory) / timeRollOut)) + "%) ");
 		System.out.println("Update : " + timeUpdate + "ms (" + ((double) (timeUpdate) / totTime) + "%)");
-		System.out.println("Number duplicates found : " + numberDuplicates);
-		System.out.println("Max measure : " + maxMeasure);
+		// System.out.println("Number duplicates found : " + numberDuplicates);
+		// System.out.println("Max measure : " + maxMeasure);
 	}
 
 	/**
 	 * Write the information file info.log
 	 */
-	protected static void writeInfo() {
+	public static void writeInfo() {
 		try {
 			// Write the values of the parameters of this run
 			Global.bufferInfo.write(Global.writeParameters());
@@ -229,7 +247,8 @@ public class Global {
 		parametersString += "\nmaxLength : " + maxLength;
 
 		parametersString += "\nmeasure : " + measure;
-		if (measure == Enum.Measure.FBeta) {
+		if (measure == Enum.Measure.FBeta || measure == Enum.Measure.RelativeFBeta
+				|| measure == Enum.Measure.WeightedRelativeFBeta) {
 			parametersString += "\nxBeta : " + xBeta;
 			parametersString += "\nlBeta : " + lBeta;
 		}
@@ -258,6 +277,64 @@ public class Global {
 			parametersString += "\ntopKMemory : " + topKUpdate;
 
 		return parametersString;
+	}
+
+	public static void addToResultSet(Collection<Subgroup> c) {
+		for (Subgroup s : c) {
+			Global.addToResultSet(s);
+		}
+	}
+
+	public static void addToResultSet(Subgroup s) {
+		Subgroup uniqueOne = Global.uniqueResult.get(s);
+		if (uniqueOne == null) {
+			// Global.allSubgroupsList.add(s);
+			Global.allSubgroups.add(s);
+			Global.uniqueResult.put(s, s);
+		}
+	}
+
+	public static void initialize() {
+		maxMeasure = Double.MIN_VALUE;
+		indexIteration = 0;
+		targetToId = new HashMap<String, Attribute>();
+
+		 allSubgroups = new PriorityQueue<Subgroup>(nbLoops,Subgroup.subgroupComparatorMeasureReverse);
+		//allSubgroupsList = new ArrayList<Subgroup>();
+		uniqueResult = new HashMap<Subgroup, Subgroup>();
+
+		candidatesNominal = null;
+		candidatesBoolean = null;
+		
+		// Statistic values
+		nbRoll = 0;
+		timeSelect = 0;
+		timeExpand = 0;
+		timeRollOut = 0;
+		timeUpdate = 0;
+		timeUCT = 0;
+		nbRecupSqrt = 0;
+		nbCalculSqrt = 0;
+		nbRecupLog = 0;
+		nbCalculLog = 0;
+		timeComputeRollOut = 0;
+		timeCreatePath = 0;
+		timeCreatePathRoll = 0;
+		timeHandlePath = 0;
+		timeMemory = 0;
+		numberDuplicates = 0;
+		resultMeasures = new ArrayList<Double>();
+		resultLength = new ArrayList<Integer>();
+		resultPatternCount = 0;
+		meanMeasure = 0.;
+		nbPatterns = 0;
+
+		// Optimization structure
+		bsSet.clear();
+		;
+		attrSupport = null;
+		if (amaf != null)
+			amaf.clear();
 	}
 
 }

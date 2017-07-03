@@ -1,0 +1,9 @@
+"top-left-square";numeric;some descriptions
+"top-middle-square";numeric;some descriptions
+"top-right-square";numeric;some descriptions
+"middle-left-square";numeric;some descriptions
+"middle-middle-square";numeric;some descriptions
+"middle-right-square";numeric;some descriptions
+"bottom-left-square";numeric;some descriptions
+"bottom-middle-square";numeric;some descriptions
+"bottom-right-square";numeric;some descriptions

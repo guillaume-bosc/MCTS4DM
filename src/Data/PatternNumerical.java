@@ -18,7 +18,7 @@ public class PatternNumerical extends Pattern {
 	 * Declaration of the attributes of the class
 	 * ########################################################################
 	 */
-	Map<Integer, Literal> description;
+	public Map<Integer, Literal> description;
 	boolean lastRightMove;
 
 	/*
@@ -34,7 +34,7 @@ public class PatternNumerical extends Pattern {
 		this.supportSize = Global.objects.length;
 
 		if (this.isTarget)
-			if (Global.measure == Enum.Measure.WKL)
+			if (!Global.extendsWithLabels)
 				this.candidates = new OpenBitSet(1);
 			else {
 				this.candidates = new OpenBitSet(2 * Global.targets.length);
@@ -49,14 +49,17 @@ public class PatternNumerical extends Pattern {
 	}
 
 	public PatternNumerical(PatternNumerical descr) {
-		this.description = descr.description;
+		this.description = new HashMap<Integer, Literal>();
+		this.description.putAll(descr.description);
+		
 		this.isTarget = descr.isTarget;
-		this.support = descr.support;
+		this.support = (OpenBitSet) descr.support.clone();
+		
 		this.supportSize = descr.supportSize;
 		this.lastIdAttr = descr.lastIdAttr;
 
 		if (this.isTarget)
-			if (Global.measure == Enum.Measure.WKL)
+			if (!Global.extendsWithLabels)
 				this.candidates = new OpenBitSet(1);
 			else {
 				this.candidates = new OpenBitSet(2 * Global.targets.length);
@@ -81,7 +84,7 @@ public class PatternNumerical extends Pattern {
 		this.isTarget = pattern.isTarget;
 
 		if (this.isTarget)
-			if (Global.measure == Enum.Measure.WKL)
+			if (!Global.extendsWithLabels)
 				this.candidates = new OpenBitSet(1);
 			else {
 				this.candidates = new OpenBitSet(2 * Global.targets.length);
@@ -141,7 +144,7 @@ public class PatternNumerical extends Pattern {
 	 * ########################################################################
 	 */
 	@Override
-	Pattern expand(int idChild, OpenBitSet supportDual) {
+	public Pattern expand(int idChild, OpenBitSet supportDual) {
 		PatternNumerical child = null;
 
 		OpenBitSet supportToExtand = this.support;
@@ -487,6 +490,10 @@ public class PatternNumerical extends Pattern {
 			}
 
 		}
+		
+		if (res.isEmpty())
+			res = "[]";
+		
 		return res;
 	}
 
@@ -627,7 +634,6 @@ public class PatternNumerical extends Pattern {
 		}
 
 		this.support = (OpenBitSet) this.support.clone();
-
 	}
 
 	@Override

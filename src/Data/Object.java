@@ -14,10 +14,10 @@ public class Object {
 	 * ########################################################################
 	 */
 	int id; // id of the object
-	OpenBitSet target; // Target of the object
-	int[] descriptionNumerical;
-	OpenBitSet descriptionBoolean;
-	List<OpenBitSet> descriptionSequence;
+	public OpenBitSet target; // Target of the object
+	public int[] descriptionNumerical;
+	public OpenBitSet descriptionBoolean;
+	public List<OpenBitSet> descriptionSequence;
 
 	/*
 	 * ########################################################################
@@ -144,10 +144,10 @@ public class Object {
 			OpenBitSet bs = this.descriptionSequence.get(i);
 			String tmp = "";
 			for (int j = bs.nextSetBit(0); j >= 0; j = bs.nextSetBit(j + 1)) {
-				if (!res.isEmpty()) {
+				if (!tmp.isEmpty()) {
 					tmp += ", ";
 				}
-				tmp += Global.attributes[j].getName();
+				tmp += j;
 			}
 			if (!res.isEmpty())
 				res += " ";

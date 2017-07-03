@@ -20,7 +20,7 @@ public class PatternNominal extends Pattern {
 	 * Declaration of the attributes of the class
 	 * ########################################################################
 	 */
-	Map<Integer, Integer> description;
+	public Map<Integer, Integer> description;
 
 	/*
 	 * ########################################################################
@@ -35,15 +35,14 @@ public class PatternNominal extends Pattern {
 		this.supportSize = Global.objects.length;
 
 		if (this.isTarget)
-			if (Global.measure == Enum.Measure.WKL)
+			if (!Global.extendsWithLabels)
 				this.candidates = new OpenBitSet(1);
 			else {
 				this.candidates = new OpenBitSet(Global.targets.length);
 				this.candidates.set(0, Global.targets.length);
 			}
 		else {
-			this.candidates = new OpenBitSet(Global.nbChild);
-			this.candidates.set(0, Global.nbChild);
+			this.candidates = (OpenBitSet) Global.candidatesNominal.clone();
 		}
 		this.lastIdAttr = -1;
 	}
@@ -56,15 +55,14 @@ public class PatternNominal extends Pattern {
 		this.lastIdAttr = descr.lastIdAttr;
 
 		if (this.isTarget)
-			if (Global.measure == Enum.Measure.WKL)
+			if (!Global.extendsWithLabels)
 				this.candidates = new OpenBitSet(1);
 			else {
 				this.candidates = new OpenBitSet(Global.targets.length);
 				this.candidates.set(0, Global.targets.length);
 			}
 		else {
-			this.candidates = new OpenBitSet(Global.nbChild);
-			this.candidates.set(0, Global.nbChild);
+			this.candidates = (OpenBitSet) Global.candidatesNominal.clone();
 		}
 	}
 
@@ -83,15 +81,14 @@ public class PatternNominal extends Pattern {
 		this.isTarget = pattern.isTarget;
 
 		if (this.isTarget)
-			if (Global.measure == Enum.Measure.WKL)
+			if (!Global.extendsWithLabels)
 				this.candidates = new OpenBitSet(1);
 			else {
 				this.candidates = new OpenBitSet(Global.targets.length);
 				this.candidates.set(0, Global.targets.length);
 			}
 		else {
-			this.candidates = new OpenBitSet(Global.nbChild);
-			this.candidates.set(0, Global.nbChild);
+			this.candidates = (OpenBitSet) Global.candidatesNominal.clone();
 		}
 
 	}
@@ -131,7 +128,7 @@ public class PatternNominal extends Pattern {
 	 * ########################################################################
 	 */
 	@Override
-	Pattern expand(int idChild, OpenBitSet supportDual) {
+	public Pattern expand(int idChild, OpenBitSet supportDual) {
 		this.candidates.clear(idChild);
 		PatternNominal child = null;
 		int idValue = idChild;
@@ -329,12 +326,15 @@ public class PatternNominal extends Pattern {
 			res += "[" + attr.name + " = " + attr.values[idValue] + "]";
 
 		}
+
+		if (res.isEmpty())
+			res = "[]";
+
 		return res;
 	}
 
 	@Override
-	public
-	long getDescriptionSize() {
+	public long getDescriptionSize() {
 		return this.description.size();
 	}
 

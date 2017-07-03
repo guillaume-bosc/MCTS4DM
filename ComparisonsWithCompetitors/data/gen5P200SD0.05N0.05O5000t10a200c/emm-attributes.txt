@@ -1,0 +1,10 @@
+att0;numeric;some descriptions
+att1;numeric;some descriptions
+att2;numeric;some descriptions
+att3;numeric;some descriptions
+att4;numeric;some descriptions
+att5;numeric;some descriptions
+att6;numeric;some descriptions
+att7;numeric;some descriptions
+att8;numeric;some descriptions
+att9;numeric;some descriptions

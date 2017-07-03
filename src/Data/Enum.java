@@ -6,7 +6,7 @@ public class Enum {
 	}
 
 	public enum RefineExpand {
-		Direct, Generator, TunedGenerator
+		Direct, Generator, TunedGenerator, Prefix
 	}
 
 	public enum DuplicatesExpand {
@@ -30,6 +30,14 @@ public class Enum {
 	}
 
 	public enum Measure {
-		WRAcc, F1, WKL, FBeta
+		WRAcc, F1, RelativeF1, WeightedRelativeF1, WKL, FBeta, RelativeFBeta, WeightedRelativeFBeta, RAcc, Acc, HammingLoss, ZeroOneLoss, ContingencyTable, Jaccard, Entropy, MutualInformation
+	}
+
+	public enum MctsType {
+		Independant, Unique, Subset
+	}
+
+	public enum Redundancy {
+		JaccardSupportDescription, JaccardSupportDescriptionTarget, SumJaccard
 	}
 }

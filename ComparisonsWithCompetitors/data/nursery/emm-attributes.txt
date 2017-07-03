@@ -1,0 +1,8 @@
+parents;numeric;some descriptions
+has-nurs;numeric;some descriptions
+form;numeric;some descriptions
+children;numeric;some descriptions
+housing;numeric;some descriptions
+finance;numeric;some descriptions
+social;numeric;some descriptions
+health;numeric;some descriptions

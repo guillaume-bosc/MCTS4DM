@@ -8,10 +8,10 @@ public abstract class Pattern {
 	 * Declaration of the attributes of the class
 	 * ########################################################################
 	 */
-	OpenBitSet support;
+	public OpenBitSet support;
 	OpenBitSet candidates;
 	boolean isTarget;
-	int supportSize;
+	public int supportSize;
 	int lastIdAttr;
 
 	/*
@@ -19,7 +19,7 @@ public abstract class Pattern {
 	 * Declaration of the methods of the class
 	 * ########################################################################
 	 */
-	abstract Pattern expand(int idChild, OpenBitSet supportDual);
+	public abstract Pattern expand(int idChild, OpenBitSet supportDual);
 
 	abstract boolean rollOutDirect(int idProp);
 
